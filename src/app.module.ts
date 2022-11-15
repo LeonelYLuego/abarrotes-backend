@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from './modules/clients';
+import { ProvidersModule } from './modules/providers/providers.module';
+import { ProductsModule } from './modules/products/products.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ClientsModule } from './modules/clients';
       autoLoadEntities: true,
     }),
     ClientsModule,
+    ProvidersModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],
