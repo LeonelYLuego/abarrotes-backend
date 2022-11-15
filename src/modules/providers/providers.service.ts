@@ -1,27 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 import { Provider } from './entities/provider.entity';
 
 @Injectable()
 export class ProvidersService {
-  create(createProviderDto: CreateProviderDto) {
-    return null;
+  constructor(
+    @InjectRepository(Provider)
+    private providersRepository: Repository<Provider>,
+  ) {}
+
+  async create(createProviderDto: CreateProviderDto): Promise<Provider> {
+    return await this.providersRepository.save(createProviderDto);
   }
 
-  findAll() {
-    return null;
+  async findAll(): Promise<Provider[]> {
+    return await this.providersRepository.find({});
   }
 
   async findOne(id: number): Promise<Provider> {
-    return null;
+    const provider = await this.providersRepository.findOne({ where: { id } });
+    if (!provider) throw new ForbiddenException('provider not found');
+    return provider;
   }
 
-  update(id: number, updateProviderDto: UpdateProviderDto) {
-    return null;
+  async update(
+    id: number,
+    updateProviderDto: UpdateProviderDto,
+  ): Promise<Provider> {
+    await this.findOne(id);
+    if (
+      (await this.providersRepository.update({ id }, updateProviderDto))
+        .affected == 0
+    )
+      throw new ForbiddenException('provider not modified');
+    return await this.findOne(id);
   }
 
-  remove(id: number) {
-    return null;
+  async remove(id: number): Promise<void> {
+    await this.findOne(id);
+    if ((await this.providersRepository.delete({ id })).affected == 0)
+      throw new ForbiddenException('provider not deleted');
   }
 }
