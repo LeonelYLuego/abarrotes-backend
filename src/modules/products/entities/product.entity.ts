@@ -44,6 +44,7 @@ export class Product {
   @Column({ length: 64 })
   brand: string;
 
+  @ApiProperty()
   @ManyToOne(() => Provider, (provider) => provider.id, { onDelete: 'CASCADE' })
   provider: number | Provider;
 }

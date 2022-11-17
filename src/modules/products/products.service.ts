@@ -19,11 +19,18 @@ export class ProductsService {
   }
 
   async findAll(): Promise<Product[]> {
-    return await this.productsRepository.find({});
+    return await this.productsRepository.find({
+      relations: {
+        provider: true,
+      },
+    });
   }
 
   async findOne(id: number): Promise<Product> {
-    const product = await this.productsRepository.findOne({ where: { id } });
+    const product = await this.productsRepository.findOne({
+      where: { id },
+      relations: { provider: true },
+    });
     if (!product) throw new ForbiddenException('product not found');
     return product;
   }
