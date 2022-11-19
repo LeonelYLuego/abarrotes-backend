@@ -5,6 +5,7 @@ import { ClientsModule } from './modules/clients';
 import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { EmployeesModule } from './modules/employees/employees.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EmployeesModule } from './modules/employees/employees.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    AuthModule,
     ClientsModule,
     ProductsModule,
     // OrdersModule,

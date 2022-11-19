@@ -61,10 +61,4 @@ export class CreateProductDto {
   @MinLength(3)
   @MaxLength(64)
   brand: string;
-
-  @ApiProperty()
-  @IsDefined()
-  @IsNumber()
-//   @Matches(/^\d+$/)
-  provider: number;
 }
