@@ -1,16 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
+  IsDateString,
   IsDefined,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Matches,
   MaxLength,
   MinLength,
-  IsString,
-  IsDateString,
-  Matches,
-  IsEmail,
-  IsOptional,
 } from 'class-validator';
 
-export class CreateClientDto {
+export class CreateEmployeeDto {
   @ApiProperty({ minLength: 3, maxLength: 64 })
   @IsDefined()
   @IsString()
@@ -32,14 +34,20 @@ export class CreateClientDto {
   @MaxLength(64)
   secondLastName: string;
 
-  @ApiProperty()
+  @ApiProperty({ minLength: 3, maxLength: 64 })
+  @IsDefined()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(64)
+  password: string;
+
+  @ApiProperty({})
   @IsDefined()
   @IsDateString()
   birthday: Date;
 
-  @ApiProperty({ minLength: 13, maxLength: 13 })
+  @ApiProperty({ maxLength: 13, minLength: 13, required: false })
   @IsOptional()
-  @IsString()
   @MinLength(13)
   @MaxLength(13)
   @Matches(
@@ -47,19 +55,28 @@ export class CreateClientDto {
   )
   rfc?: string;
 
-  @ApiProperty({ minLength: 3, maxLength: 128 })
-  @IsDefined()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(128)
-  @IsEmail()
   @ApiProperty()
-  email: string;
+  @IsDefined()
+  @IsNumber()
+  @IsPositive()
+  salary: number;
 
   @ApiProperty({ minLength: 3, maxLength: 64 })
   @IsDefined()
   @IsString()
   @MinLength(3)
   @MaxLength(64)
-  password: string;
+  maritalStatus: string;
+
+  @ApiProperty({ minLength: 3, maxLength: 64 })
+  @IsDefined()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(64)
+  education: string;
+
+  @ApiProperty({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  administrator: boolean;
 }

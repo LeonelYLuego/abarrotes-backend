@@ -1,7 +1,6 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProvidersService } from '../providers';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -10,26 +9,19 @@ import { Product } from './entities/product.entity';
 export class ProductsService {
   constructor(
     @InjectRepository(Product) private productsRepository: Repository<Product>,
-    private providersService: ProvidersService,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
-    await this.providersService.findOne(createProductDto.provider);
     return await this.productsRepository.save(createProductDto);
   }
 
   async findAll(): Promise<Product[]> {
-    return await this.productsRepository.find({
-      relations: {
-        provider: true,
-      },
-    });
+    return await this.productsRepository.find({});
   }
 
   async findOne(id: number): Promise<Product> {
     const product = await this.productsRepository.findOne({
       where: { id },
-      relations: { provider: true },
     });
     if (!product) throw new ForbiddenException('product not found');
     return product;
@@ -40,7 +32,6 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
     await this.findOne(id);
-    await this.providersService.findOne(updateProductDto.provider);
     if (
       (await this.productsRepository.update({ id }, updateProductDto))
         .affected == 0

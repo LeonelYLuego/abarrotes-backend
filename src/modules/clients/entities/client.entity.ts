@@ -24,8 +24,8 @@ export class Client {
   birthday: Date;
 
   @ApiProperty()
-  @Column({ length: 13 })
-  rfc: string;
+  @Column({ length: 13, nullable: true })
+  rfc?: string;
 
   @ApiProperty()
   @Column({ length: 128 })

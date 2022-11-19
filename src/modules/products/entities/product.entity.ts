@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Provider } from 'src/modules/providers';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -43,8 +42,4 @@ export class Product {
   @ApiProperty()
   @Column({ length: 64 })
   brand: string;
-
-  @ApiProperty()
-  @ManyToOne(() => Provider, (provider) => provider.id, { onDelete: 'CASCADE' })
-  provider: number | Provider;
 }

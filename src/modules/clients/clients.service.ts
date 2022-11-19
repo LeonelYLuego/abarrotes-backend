@@ -29,6 +29,11 @@ export class ClientsService {
 
   async update(id: number, updateClientDto: UpdateClientDto): Promise<Client> {
     await this.findOne(id);
+    if (updateClientDto.password)
+      updateClientDto.password = await bcrypt.hash(
+        updateClientDto.password,
+        13,
+      );
     if (
       (await this.clientsRepository.update({ id }, updateClientDto)).affected ==
       0
