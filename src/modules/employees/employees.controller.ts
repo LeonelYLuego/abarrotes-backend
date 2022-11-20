@@ -29,7 +29,6 @@ export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   @Post()
-  @Auth('administrator')
   @ApiBody({ type: CreateEmployeeDto })
   @ApiCreatedResponse({ type: Employee })
   async create(
