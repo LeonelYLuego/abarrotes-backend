@@ -1,10 +1,10 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { ClientsModule } from '../clients';
+import { EmployeesModule } from '../employees';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { ClientsModule, ClientsService } from '../clients';
-import { EmployeesModule } from '../employees';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -13,8 +13,8 @@ import { AuthService } from './auth.service';
       secret: process.env.JWT,
       signOptions: { expiresIn: '24h' },
     }),
-    forwardRef(() => ClientsModule),
-    forwardRef(() => EmployeesModule),
+    ClientsModule,
+    EmployeesModule,
   ],
   providers: [AuthService],
   controllers: [AuthController],

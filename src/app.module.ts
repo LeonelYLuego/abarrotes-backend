@@ -1,10 +1,16 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from './modules/clients';
 import { ProductsModule } from './modules/products/products.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AuthMiddleware } from './modules/auth/middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -23,10 +29,20 @@ import { AuthModule } from './modules/auth/auth.module';
     AuthModule,
     ClientsModule,
     ProductsModule,
-    // OrdersModule,
     EmployeesModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: 'api/auth/log-in', method: RequestMethod.POST },
+        { path: 'api/clients', method: RequestMethod.POST },
+        { path: 'api/employees', method: RequestMethod.POST },
+      )
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

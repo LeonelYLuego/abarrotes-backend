@@ -1,25 +1,18 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ClientsService } from '../clients';
 import { EmployeesService } from '../employees';
-import { LogInDto } from './dto/log-in.dto';
-import * as bcrypt from 'bcryptjs';
-import { ResponseLogInDto } from './dto/response-log-in.dto';
 import { UserDto } from './dto/user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { ResponseLogInDto } from './dto/response-log-in.dto';
+import * as bcrypt from 'bcryptjs';
+import { LogInDto } from './dto/log-in.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    @Inject(forwardRef(() => EmployeesService))
-    private employeesService: EmployeesService,
-    @Inject(forwardRef(() => ClientsService))
     private clientsService: ClientsService,
+    private employeesService: EmployeesService,
   ) {}
 
   async login(logInDto: LogInDto): Promise<ResponseLogInDto> {
@@ -27,10 +20,10 @@ export class AuthService {
     if (employee) {
       if (await bcrypt.compare(logInDto.password, employee.password)) {
         return {
-          type: employee.administrator ? 'administrator' : 'employee',
+          role: employee.administrator ? 'administrator' : 'employee',
           id: employee.id,
           token: this.jwtService.sign({
-            type: employee.administrator ? 'administrator' : 'employee',
+            role: employee.administrator ? 'administrator' : 'employee',
             id: employee.id,
           }),
         };
@@ -40,10 +33,10 @@ export class AuthService {
     if (client) {
       if (bcrypt.compareSync(logInDto.password, client.password)) {
         return {
-          type: 'client',
+          role: 'client',
           id: client.id,
           token: this.jwtService.sign({
-            type: 'client',
+            role: 'client',
             id: client.id,
           }),
         };
@@ -52,25 +45,25 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  async authenticate(token: string): Promise<UserDto | null> {
+  async authenticate(token: string | null): Promise<UserDto | null> {
     if (token) {
       try {
         const payload = (await this.jwtService.verify(
           token,
         )) as ResponseLogInDto;
-        if (payload.type == 'administrator' || payload.type == 'employee') {
+        if (payload.role == 'administrator' || payload.role == 'employee') {
           const employee = await this.employeesService.findOne(payload.id);
           if (
-            (employee.administrator && payload.type == 'administrator') ||
-            (!employee.administrator && payload.type == 'employee')
+            (employee.administrator && payload.role == 'administrator') ||
+            (!employee.administrator && payload.role == 'employee')
           )
             return {
-              type: payload.type,
+              role: payload.role,
               user: employee,
             };
         } else {
           return {
-            type: payload.type,
+            role: payload.role,
             user: await this.clientsService.findOne(payload.id),
           };
         }

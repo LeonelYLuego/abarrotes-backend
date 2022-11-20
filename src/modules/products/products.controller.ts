@@ -21,6 +21,7 @@ import {
 import { Product } from './entities/product.entity';
 import { HttpResponse } from 'src/core/interfaces/http-response.interface';
 import { ValidateIdPipe } from 'src/core/pipes/validate-id.pipe';
+import { Auth } from '../auth/decorators/auth.decorator';
 
 @ApiTags('Products')
 @Controller('products')
@@ -28,6 +29,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @Auth('administrator', 'employee')
   @ApiBody({ type: CreateProductDto })
   @ApiCreatedResponse({ type: Product })
   async create(
@@ -39,6 +41,7 @@ export class ProductsController {
   }
 
   @Get()
+  @Auth('administrator', 'employee', 'client')
   @ApiOkResponse({ type: [Product] })
   async findAll(): Promise<HttpResponse<Product[]>> {
     return {
@@ -47,6 +50,7 @@ export class ProductsController {
   }
 
   @Get(':id')
+  @Auth('administrator', 'employee', 'client')
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: Product })
   @ApiForbiddenResponse({ description: '`product not found`' })
@@ -59,6 +63,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @Auth('administrator', 'employee')
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateProductDto })
   @ApiOkResponse({ type: Product })
@@ -75,6 +80,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Auth('administrator', 'employee')
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse()
   async remove(
