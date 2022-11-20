@@ -47,4 +47,11 @@ export class ClientsService {
     if ((await this.clientsRepository.delete({ id })).affected == 0)
       throw new ForbiddenException('client not deleted');
   }
+
+  async findByEmail(email: string): Promise<Client> {
+    return await this.clientsRepository.findOne({
+      where: { email },
+      select: { id: true, password: true },
+    });
+  }
 }

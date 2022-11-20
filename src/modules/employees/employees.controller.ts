@@ -21,6 +21,7 @@ import {
 import { Employee } from './entities/employee.entity';
 import { HttpResponse } from 'src/core/interfaces/http-response.interface';
 import { ValidateIdPipe } from 'src/core/pipes/validate-id.pipe';
+import { Auth, USERS } from '../auth';
 
 @ApiTags('Employees')
 @Controller('employees')
@@ -39,6 +40,7 @@ export class EmployeesController {
   }
 
   @Get()
+  // @Auth(USERS.ADMINISTRATOR)
   @ApiOkResponse({ type: [Employee] })
   async findAll(): Promise<HttpResponse<Employee[]>> {
     return {
@@ -47,6 +49,7 @@ export class EmployeesController {
   }
 
   @Get(':id')
+  // @Auth(USERS.ADMINISTRATOR)
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: Employee })
   @ApiForbiddenResponse({ description: '`employee not found`' })
@@ -59,6 +62,7 @@ export class EmployeesController {
   }
 
   @Patch(':id')
+  // @Auth(USERS.ADMINISTRATOR)
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: Employee })
   @ApiForbiddenResponse({
@@ -74,6 +78,7 @@ export class EmployeesController {
   }
 
   @Delete(':id')
+  // @Auth(USERS.ADMINISTRATOR)
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse()
   @ApiForbiddenResponse({

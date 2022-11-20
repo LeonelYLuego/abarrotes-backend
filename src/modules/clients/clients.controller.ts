@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { HttpResponse } from 'src/core/interfaces/http-response.interface';
 import { ValidateIdPipe } from 'src/core/pipes/validate-id.pipe';
+import { Auth, USERS } from '../auth';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -47,6 +48,7 @@ export class ClientsController {
   }
 
   @Get(':id')
+  // @Auth(USERS.ALL)
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({ type: Client })
   @ApiForbiddenResponse({ type: '`client not found`' })
@@ -59,6 +61,7 @@ export class ClientsController {
   }
 
   @Patch(':id')
+  // @Auth(USERS.ALL)
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateClientDto })
   @ApiOkResponse({ type: Client })
@@ -75,6 +78,7 @@ export class ClientsController {
   }
 
   @Delete(':id')
+  // @Auth(USERS.ALL)
   @ApiParam({ name: 'id', type: Number })
   @ApiOkResponse({})
   @ApiForbiddenResponse({

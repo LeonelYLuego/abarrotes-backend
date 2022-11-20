@@ -54,4 +54,11 @@ export class EmployeesService {
     if ((await this.employeesRepository.delete({ id })).affected == 0)
       throw new ForbiddenException('employee not deleted');
   }
+
+  async findByEmail(email: string): Promise<Employee> {
+    return await this.employeesRepository.findOne({
+      where: { email },
+      select: { id: true, password: true, administrator: true },
+    });
+  }
 }

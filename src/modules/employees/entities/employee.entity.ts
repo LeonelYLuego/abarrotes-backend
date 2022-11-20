@@ -20,6 +20,10 @@ export class Employee {
   secondLastName: string;
 
   @ApiProperty()
+  @Column({length: 128})
+  email: string;
+
+  @ApiProperty()
   @Column({ length: 128, select: false })
   password: string;
 

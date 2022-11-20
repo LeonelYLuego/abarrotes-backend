@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
+  IsEmail,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -33,6 +34,12 @@ export class CreateEmployeeDto {
   @MinLength(3)
   @MaxLength(64)
   secondLastName: string;
+
+  @ApiProperty({ minLength: 3, maxLength: 128 })
+  @IsDefined()
+  @IsString()
+  @IsEmail()
+  email: string;
 
   @ApiProperty({ minLength: 3, maxLength: 64 })
   @IsDefined()
