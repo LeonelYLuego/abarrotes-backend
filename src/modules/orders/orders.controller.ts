@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { HttpResponse } from 'src/core/interfaces/http-response.interface';
+import { ValidateIdPipe } from 'src/core/pipes/validate-id.pipe';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -34,7 +35,7 @@ export class OrdersController {
   @Auth('client')
   @ApiBody({ type: CreateOrderDto })
   @ApiCreatedResponse({ type: Order })
-  async create(
+  async createCart(
     @Body() createOrderDto: CreateOrderDto,
     @CurrentUser() user: UserDto,
   ): Promise<HttpResponse<Order>> {
@@ -49,9 +50,52 @@ export class OrdersController {
   @Get('cart')
   @Auth('client')
   @ApiOkResponse({ type: [Order] })
-  async findAll(@CurrentUser() user: UserDto): Promise<HttpResponse<Order[]>> {
+  async findAllInTheCart(
+    @CurrentUser() user: UserDto,
+  ): Promise<HttpResponse<Order[]>> {
     return {
       data: await this.ordersService.findAllInTheCart(user.user as Client),
+    };
+  }
+
+  @Post('buy')
+  @Auth('client')
+  @ApiCreatedResponse({ type: Order })
+  async createPlaced(
+    @Body() createOrderDto: CreateOrderDto,
+    @CurrentUser() user: UserDto,
+  ): Promise<HttpResponse<Order>> {
+    return {
+      data: await this.ordersService.createPlaced(
+        createOrderDto,
+        user.user as Client,
+      ),
+    };
+  }
+
+  @Get('buy')
+  @Auth('client')
+  @ApiOkResponse({ type: [Order] })
+  async findAll(@CurrentUser() user: UserDto): Promise<HttpResponse<Order[]>> {
+    return {
+      data: await this.ordersService.findAll(user.user as Client),
+    };
+  }
+
+  @Patch('buy/:id')
+  @Auth('client')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiOkResponse({ type: Order })
+  @ApiForbiddenResponse({
+    description:
+      '`order not found` `order must be not placed` `order not modified`',
+  })
+  async buy(
+    @Param('id', ValidateIdPipe) id: string,
+    @CurrentUser() user: UserDto,
+  ): Promise<HttpResponse<Order>> {
+    return {
+      data: await this.ordersService.buy(+id, user.user as Client),
     };
   }
 
@@ -61,7 +105,7 @@ export class OrdersController {
   @ApiOkResponse({ type: Order })
   @ApiForbiddenResponse({ description: '`order not found`' })
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ValidateIdPipe) id: string,
     @CurrentUser() user: UserDto,
   ): Promise<HttpResponse<Order>> {
     return {
@@ -79,7 +123,7 @@ export class OrdersController {
       '`order not found` `order must be not placed` `order not modified`',
   })
   async update(
-    @Param('id') id: string,
+    @Param('id', ValidateIdPipe) id: string,
     @Body() updateOrderDto: UpdateOrderDto,
     @CurrentUser() user: UserDto,
   ): Promise<HttpResponse<Order>> {
@@ -100,7 +144,7 @@ export class OrdersController {
   })
   @Auth('client')
   async remove(
-    @Param('id') id: string,
+    @Param('id', ValidateIdPipe) id: string,
     @CurrentUser() user: UserDto,
   ): Promise<HttpResponse<undefined>> {
     await this.ordersService.remove(+id, user.user as Client);
