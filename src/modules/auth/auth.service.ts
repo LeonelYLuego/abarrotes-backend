@@ -4,7 +4,7 @@ import { EmployeesService } from '../employees';
 import { UserDto } from './dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ResponseLogInDto } from './dto/response-log-in.dto';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { LogInDto } from './dto/log-in.dto';
 
 @Injectable()
