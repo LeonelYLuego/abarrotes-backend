@@ -1,7 +1,13 @@
-import { Role } from "../types/role.types";
+import { ApiProperty } from '@nestjs/swagger';
+import { Role } from '../types/role.types';
 
 export class ResponseLogInDto {
-    role: Role;
-    id: number;
-    token: string;
+  @ApiProperty({ enum: ['administrator', 'employee', 'client'] })
+  role: Role;
+
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  token: string;
 }

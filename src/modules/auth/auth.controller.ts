@@ -1,5 +1,10 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { HttpResponse } from 'src/core/interfaces/http-response.interface';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
@@ -15,6 +20,8 @@ export class AuthController {
 
   @Post('log-in')
   @ApiBody({ type: LogInDto })
+  @ApiBody({ type: LogInDto })
+  @ApiCreatedResponse({ type: ResponseLogInDto })
   async logIn(
     @Body() logInDto: LogInDto,
   ): Promise<HttpResponse<ResponseLogInDto>> {
@@ -24,6 +31,7 @@ export class AuthController {
   }
 
   @Get('logged')
+  @ApiOkResponse({ type: UserDto })
   @Auth('administrator', 'employee', 'client')
   async logged(@CurrentUser() user: UserDto): Promise<HttpResponse<UserDto>> {
     return {

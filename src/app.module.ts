@@ -11,6 +11,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthMiddleware } from './modules/auth/middleware/auth.middleware';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AuthMiddleware } from './modules/auth/middleware/auth.middleware';
     ClientsModule,
     ProductsModule,
     EmployeesModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [],
