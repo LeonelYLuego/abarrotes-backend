@@ -20,7 +20,7 @@ export class Client {
   secondLastName: string;
 
   @ApiProperty()
-  @Column({ type: Date })
+  @Column({ type: 'date' })
   birthday: Date;
 
   @ApiProperty()

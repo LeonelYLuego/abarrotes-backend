@@ -28,7 +28,7 @@ export class Employee {
   password: string;
 
   @ApiProperty()
-  @Column({ type: Date })
+  @Column({ type: 'date' })
   birthday: Date;
 
   @ApiProperty({ maxLength: 13, minLength: 13 })
