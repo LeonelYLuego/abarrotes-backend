@@ -61,6 +61,7 @@ export class OrdersController {
   @Post('buy')
   @Auth('client')
   @ApiCreatedResponse({ type: Order })
+  @ApiForbiddenResponse({ description: '`product out of stock`' })
   async createPlaced(
     @Body() createOrderDto: CreateOrderDto,
     @CurrentUser() user: UserDto,
@@ -88,7 +89,7 @@ export class OrdersController {
   @ApiOkResponse({ type: Order })
   @ApiForbiddenResponse({
     description:
-      '`order not found` `order must be not placed` `order not modified`',
+      '`order not found` `order must be not placed` `order not modified` `product out of stock`',
   })
   async buy(
     @Param('id', ValidateIdPipe) id: string,

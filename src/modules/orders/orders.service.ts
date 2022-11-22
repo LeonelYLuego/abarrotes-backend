@@ -32,13 +32,18 @@ export class OrdersService {
     client: Client,
   ): Promise<Order> {
     const product = await this.productsService.findOne(createOrderDto.product);
+    if (product.existence - createOrderDto.quantity < 0)
+      throw new ForbiddenException('product out of stock');
     const date = new Date();
-    return await this.ordersRepository.save({
+    const order = await this.ordersRepository.save({
+      quantity: createOrderDto.quantity,
       placed: date,
       cart: date,
       client,
       product,
     });
+    await this.productsService.decExistence(product.id, order.quantity);
+    return order;
   }
 
   async findAll(client: Client): Promise<Order[]> {
@@ -63,12 +68,16 @@ export class OrdersService {
 
   async buy(id: number, client: Client): Promise<Order> {
     const order = await this.findOne(id, client);
+    const product = await this.productsService.findOne(order.product.id);
+    if (product.existence - order.quantity < 0)
+      throw new ForbiddenException('product out of stock');
     if (order.placed) throw new ForbiddenException('order must be not placed');
     if (
       (await this.ordersRepository.update({ id }, { placed: new Date() }))
         .affected == 0
     )
       throw new ForbiddenException('order not modified');
+    await this.productsService.decExistence(product.id, order.quantity);
     return await this.findOne(id, client);
   }
 

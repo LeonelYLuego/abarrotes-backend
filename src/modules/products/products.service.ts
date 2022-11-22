@@ -45,4 +45,17 @@ export class ProductsService {
     if ((await this.productsRepository.delete({ id })).affected == 0)
       throw new ForbiddenException('product not deleted');
   }
+
+  async decExistence(id: number, quantity: number): Promise<Product> {
+    const product = await this.findOne(id);
+    if (
+      (
+        await this.productsRepository.update(product, {
+          existence: product.existence - quantity,
+        })
+      ).affected == 0
+    )
+      throw new ForbiddenException('product not modified');
+    return await this.findOne(id);
+  }
 }
