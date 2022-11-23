@@ -49,18 +49,21 @@ export class OrdersService {
   async findAll(client: Client): Promise<Order[]> {
     return await this.ordersRepository.find({
       where: { client, placed: Not(IsNull()) },
+      relations: { product: true },
     });
   }
 
   async findAllInTheCart(client: Client): Promise<Order[]> {
     return await this.ordersRepository.find({
       where: { client, placed: IsNull() },
+      relations: { product: true },
     });
   }
 
   async findOne(id: number, client: Client): Promise<Order> {
     const order = await this.ordersRepository.findOne({
       where: { id, client },
+      relations: { product: true },
     });
     if (!order) throw new ForbiddenException('order not found');
     return order;
